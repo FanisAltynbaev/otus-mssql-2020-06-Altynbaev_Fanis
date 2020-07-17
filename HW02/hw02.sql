@@ -31,7 +31,8 @@ SET ROWCOUNT 100
 select distinct
     o.OrderID
   , convert(varchar(10), o.OrderDate, 104) as OrderDate
-  , case month(o.OrderDate) when  1 then 'January'
+  , datename(month, o.OrderDate)
+  /*, case month(o.OrderDate) when  1 then 'January'
                             when  2 then 'February'
                             when  3 then 'March'
                             when  4 then 'April'
@@ -44,8 +45,9 @@ select distinct
                             when 11 then 'November'
                             when 12 then 'December'
                             else ''
-    end
-  , (month(o.OrderDate)-1)/3+1 as g4--, 'квартал'
+    end*/
+  --, (month(o.OrderDate)-1)/3+1 as g4--, 'квартал'
+  , DATEPART (QUARTER,o.OrderDate) as g4--, 'квартал'
   , (month(o.OrderDate)-1)/4+1 as g3--, 'декада_года'
   , c.CustomerName
  -- , ol.OrderLineID
