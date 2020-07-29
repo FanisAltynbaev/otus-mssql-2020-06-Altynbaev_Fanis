@@ -33,6 +33,9 @@ REFERENCES MaterialType (MaterialTypeID)
 ALTER TABLE Material  ADD  CONSTRAINT FK_Material_Storage FOREIGN KEY(Storage)
 REFERENCES Storage (StorageID)
 
+create index idx_Material_MaterialType on Material (MaterialType);
+create index idx_Material_Storage on Material (Storage);
+
 
 CREATE TABLE MaterialType(
 	MaterialTypeID 	int not null identity(1, 1)  primary key,
@@ -63,13 +66,16 @@ CREATE TABLE Orders(
 
 ALTER TABLE Orders  ADD  CONSTRAINT FK_Orders_Status FOREIGN KEY(Status)
 REFERENCES Status (StatusID)
-
+Orders
 ALTER TABLE Orders  ADD  CONSTRAINT FK_Orders_Client FOREIGN KEY(Client)
 REFERENCES Client (ClientID)
 
 ALTER TABLE Orders  ADD  CONSTRAINT FK_Orders_Material FOREIGN KEY(Material)
 REFERENCES Material (MaterialID)
 
+create index idx_Orders_Client on Orders (Client);
+create index idx_Orders_Material on Orders (Material);
+create index idx_Orders_Status on Orders (Status);
 
 
 CREATE TABLE Status(
