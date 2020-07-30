@@ -4,68 +4,68 @@ go
 
 --1. ƒовставл€ть в базу 5 записей использу€ insert в таблицу Customers или Suppliers
 insert into Sales.Customers
-(CustomerName
-,BillToCustomerID
-,CustomerCategoryID
---,BuyingGroupID
-,PrimaryContactPersonID
---,AlternateContactPersonID
-,DeliveryMethodID
-,DeliveryCityID
-,PostalCityID
---,CreditLimit
-,AccountOpenedDate
-,StandardDiscountPercentage
-,IsStatementSent
-,IsOnCreditHold
-,PaymentDays
-,PhoneNumber
-,FaxNumber
---,DeliveryRun
---,RunPosition
-,WebsiteURL
-,DeliveryAddressLine1
---,DeliveryAddressLine2
-,DeliveryPostalCode
---,DeliveryLocation
-,PostalAddressLine1
---,PostalAddressLine2
-,PostalPostalCode
-,LastEditedBy
---,ValidFrom
---,ValidTo
+    (CustomerName
+    ,BillToCustomerID
+    ,CustomerCategoryID
+    --,BuyingGroupID
+    ,PrimaryContactPersonID
+    --,AlternateContactPersonID
+    ,DeliveryMethodID
+    ,DeliveryCityID
+    ,PostalCityID
+    --,CreditLimit
+    ,AccountOpenedDate
+    ,StandardDiscountPercentage
+    ,IsStatementSent
+    ,IsOnCreditHold
+    ,PaymentDays
+    ,PhoneNumber
+    ,FaxNumber
+    --,DeliveryRun
+    --,RunPosition
+    ,WebsiteURL
+    ,DeliveryAddressLine1
+    --,DeliveryAddressLine2
+    ,DeliveryPostalCode
+    --,DeliveryLocation
+    ,PostalAddressLine1
+    --,PostalAddressLine2
+    ,PostalPostalCode
+    ,LastEditedBy
+    --,ValidFrom
+    --,ValidTo
 )
 select
- 'New ' + CustomerName
-,BillToCustomerID
-,CustomerCategoryID
---,BuyingGroupID
-,PrimaryContactPersonID
---,AlternateContactPersonID
-,DeliveryMethodID
-,DeliveryCityID
-,PostalCityID
---,CreditLimit
-,AccountOpenedDate
-,StandardDiscountPercentage
-,IsStatementSent
-,IsOnCreditHold
-,PaymentDays
-,PhoneNumber
-,FaxNumber
---,DeliveryRun
---,RunPosition
-,WebsiteURL
-,DeliveryAddressLine1
---,DeliveryAddressLine2
-,DeliveryPostalCode
---,DeliveryLocation
-,PostalAddressLine1
---,PostalAddressLine2
-,PostalPostalCode
-,LastEditedBy
---,ValidFrom
---,ValidTo
+     'New ' + CustomerName
+    ,BillToCustomerID
+    ,CustomerCategoryID
+    --,BuyingGroupID
+    ,PrimaryContactPersonID
+    --,AlternateContactPersonID
+    ,DeliveryMethodID
+    ,DeliveryCityID
+    ,PostalCityID
+    --,CreditLimit
+    ,AccountOpenedDate
+    ,StandardDiscountPercentage
+    ,IsStatementSent
+    ,IsOnCreditHold
+    ,PaymentDays
+    ,PhoneNumber
+    ,FaxNumber
+    --,DeliveryRun
+    --,RunPosition
+    ,WebsiteURL
+    ,DeliveryAddressLine1
+    --,DeliveryAddressLine2
+    ,DeliveryPostalCode
+    --,DeliveryLocation
+    ,PostalAddressLine1
+    --,PostalAddressLine2
+    ,PostalPostalCode
+    ,LastEditedBy
+    --,ValidFrom
+    --,ValidTo
 from Sales.Customers c
 where c.CustomerID <=5
 
@@ -237,7 +237,7 @@ WHEN NOT MATCHED
                  ,LastEditedBy
                  --,ValidFrom
                  --,ValidTo
-         )         	
+         )              
          VALUES ( 'New+3' + SUBSTRING(source.CustomerName, 6, LEN(source.CustomerName))
                  ,source.BillToCustomerID
                  ,source.CustomerCategoryID
@@ -268,7 +268,7 @@ WHEN NOT MATCHED
                  ,source.LastEditedBy
                  --,ValidFrom
                  --,ValidTo
-		)
+                )
 OUTPUT deleted.*, $action, inserted.*;
 
 select top 5 * from Sales.Customers
@@ -300,20 +300,20 @@ exec master..xp_cmdshell 'bcp "SELECT CustomerID, CustomerName FROM WideWorldImp
 drop table if exists [Sales].[ShortCustomers]
 
 CREATE TABLE [Sales].[ShortCustomers](
-	[CustomerID] [int] NOT NULL,
-	[CustomerName] [nvarchar](100) NOT NULL
+        [CustomerID] [int] NOT NULL,
+        [CustomerName] [nvarchar](100) NOT NULL
 )
 
 BULK INSERT [WideWorldImporters].[Sales].[ShortCustomers]
-		   FROM "C:\1\Sales_Customers_c.bcp"
-		   WITH 
-			 (
-				BATCHSIZE = 1000, 
-				DATAFILETYPE = 'widechar',
-				FIELDTERMINATOR = '@eu&$1&',
-				ROWTERMINATOR ='\n',
-				KEEPNULLS,
-				TABLOCK        
-			  );
+                   FROM "C:\1\Sales_Customers_c.bcp"
+                   WITH 
+                         (
+                                BATCHSIZE = 1000, 
+                                DATAFILETYPE = 'widechar',
+                                FIELDTERMINATOR = '@eu&$1&',
+                                ROWTERMINATOR ='\n',
+                                KEEPNULLS,
+                                TABLOCK        
+                          );
 
 select * from [WideWorldImporters].[Sales].[ShortCustomers]
