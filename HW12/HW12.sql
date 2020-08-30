@@ -118,8 +118,7 @@ GO
 
 --SELECT @@SERVERNAME
 
-exec master..xp_cmdshell 'bcp  "select top 10  StockItemName as [@Name],  SupplierID as [SupplierID], UnitPackageID as [Package/UnitPackageID], OuterPackageID as [Package/OuterPackageID], QuantityPerOuter as [Package/QuantityPerOuter], TypicalWeightPerUnit as [Package/TypicalWeightPerUnit], LeadTimeDays as [LeadTimeDays], IsChillerStock as [IsChillerStock], TaxRate as [TaxRate],UnitPrice as [UnitPrice]from [Warehouse].[StockItems]FOR XML PATH" queryout "C:\1\OutputFile.xml" -T -w -t"@eu&$1&" -S DESKTOP-5G2NUF4\OTUS'
-
+exec master..xp_cmdshell 'bcp  "use WideWorldImporters select top 10  StockItemName as [@Name],  SupplierID as [SupplierID], UnitPackageID as [Package/UnitPackageID], OuterPackageID as [Package/OuterPackageID], QuantityPerOuter as [Package/QuantityPerOuter], TypicalWeightPerUnit as [Package/TypicalWeightPerUnit], LeadTimeDays as [LeadTimeDays], IsChillerStock as [IsChillerStock], TaxRate as [TaxRate],UnitPrice as [UnitPrice]from [Warehouse].[StockItems]FOR XML PATH" queryout "C:\1\OutputFile.xml" -T -w -t"@eu&$1&" -S DESKTOP-5G2NUF4\OTUS'
 
 --Примечания к заданиям 1, 2:
 --* Если с выгрузкой в файл будут проблемы, то можно сделать просто SELECT c результатом в виде XML. 
