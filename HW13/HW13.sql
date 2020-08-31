@@ -1,8 +1,9 @@
 --Написать хранимую процедуру возвращающую Клиента с набольшей разовой суммой покупки. 
 --1) Написать функцию возвращающую Клиента с наибольшей суммой покупки.
 use WideWorldImporters
-DROP PROCEDURE IF EXISTS #uspBestClient
-;CREATE PROCEDURE #uspBestClient
+go
+--DROP PROCEDURE IF EXISTS #uspBestClient
+CREATE OR ALTER PROCEDURE #uspBestClient
   WITH EXECUTE AS CALLER
 -- CALLER - Указывает, что инструкции, содержащиеся в модуле, выполняются в контексте пользователя, вызывающего этот модуль.
 -- Пользователь, выполняющий модуль, должен иметь соответствующие разрешения не только на сам модуль, 
@@ -36,8 +37,9 @@ EXEC #uspBestClient
 --Sales.InvoiceLines
 
 use WideWorldImporters
---DROP PROCEDURE IF EXISTS #uspClientOrders
-;CREATE PROCEDURE #uspClientOrders
+GO
+
+CREATE OR ALTER  PROCEDURE #uspClientOrders
   @CustomerID int
   WITH EXECUTE AS CALLER
 -- CALLER - Указывает, что инструкции, содержащиеся в модуле, выполняются в контексте пользователя, вызывающего этот модуль.
@@ -65,8 +67,9 @@ EXEC #uspClientOrders
 
 --3) Создать одинаковую функцию и хранимую процедуру, посмотреть в чем разница в производительности и почему.
 use WideWorldImporters
---DROP PROCEDURE IF EXISTS #uspClientOrders
-;CREATE PROCEDURE #uspClientOrders
+GO
+
+CREATE OR ALTER PROCEDURE #uspClientOrders
   @CustomerID int
   WITH EXECUTE AS CALLER
 -- CALLER - Указывает, что инструкции, содержащиеся в модуле, выполняются в контексте пользователя, вызывающего этот модуль.
@@ -87,8 +90,7 @@ AS
 END
 GO
 
---DROP FUNCTION IF EXISTS ufClientOrders
-;CREATE FUNCTION ufClientOrders (@CustomerID int)
+CREATE OR ALTER FUNCTION ufClientOrders (@CustomerID int)
   RETURNS decimal (18,2) 
   WITH EXECUTE AS CALLER
 -- CALLER - Указывает, что инструкции, содержащиеся в модуле, выполняются в контексте пользователя, вызывающего этот модуль.
@@ -152,14 +154,13 @@ select dbo.ufClientOrders(71)
 
 --4) Создайте табличную функцию покажите как ее можно вызвать для каждой строки result set'а без использования цикла. 
 use WideWorldImporters
-
+GO
 --создаем свой тип данных
 CREATE TYPE udfTableType 
 AS TABLE (ID int)
 GO 
 
---DROP FUNCTION IF EXISTS ufClientInfo 
-CREATE FUNCTION ufClientInfo (@CustomerID udfTableType READONLY)
+CREATE OR ALTER FUNCTION ufClientInfo (@CustomerID udfTableType READONLY)
   RETURNS TABLE 
 -- WITH EXECUTE AS CALLER
 -- CALLER - Указывает, что инструкции, содержащиеся в модуле, выполняются в контексте пользователя, вызывающего этот модуль.
@@ -176,7 +177,6 @@ RETURN
 );
 GO
 
--- проверям, что работат
 DECLARE @myTable udfTableType
 INSERT INTO @myTable(ID)
 SELECT CustomerID 
@@ -188,9 +188,11 @@ from ufClientInfo(@myTable)
 
 
 --5) Опционально. Переписать процедуру kitchen sink с множеством входных параметров по поиску в заказах на динамический SQL. Сравнить планы запроса. 
+use WideWorldImporters
+GO
 
 -- KitchenSinkOtus
-CREATE PROCEDURE dbo.CustomerSearch_KitchenSinkOtus
+CREATE OR ALTER PROCEDURE dbo.CustomerSearch_KitchenSinkOtus
   @CustomerID            int            = NULL,
   @CustomerName          nvarchar(100)  = NULL,
   @BillToCustomerID      int            = NULL,
@@ -246,11 +248,11 @@ BEGIN
 	AND ((@PrimaryContactPersonIDIsEmployee IS NULL)
 		OR (Person.IsEmployee = @PrimaryContactPersonIDIsEmployee)
 		);
-END
+END;
+GO
 
 -- DynamicSql
---DROP PROCEDURE dbo.CustomerSearch_DynamicSql
-CREATE PROCEDURE dbo.CustomerSearch_DynamicSql
+CREATE OR ALTER PROCEDURE dbo.CustomerSearch_DynamicSql
   @CustomerID            int            = NULL,
   @CustomerName          nvarchar(100)  = NULL,
   @BillToCustomerID      int            = NULL,
@@ -264,7 +266,6 @@ CREATE PROCEDURE dbo.CustomerSearch_DynamicSql
   @PersonID				 INT			= NULL, 
   @DeliveryStateProvince INT			= NULL,
   @PrimaryContactPersonIDIsEmployee BIT = NULL
-
 AS
 BEGIN
   SET NOCOUNT ON;
@@ -346,9 +347,11 @@ PRINT @sql;
        , @PersonID				
        , @DeliveryStateProvince 
        , @PrimaryContactPersonIDIsEmployee;
-END
+END;
 
 set statistics io, time on
+GO
+
 EXEC dbo.CustomerSearch_KitchenSinkOtus
 EXEC dbo.CustomerSearch_DynamicSql
 /* При данном запросе стоимомсть работ процедур 93% и 7% соответственно */
