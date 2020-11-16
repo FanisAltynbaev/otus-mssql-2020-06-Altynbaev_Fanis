@@ -47,6 +47,12 @@ CREATE TABLE Status(
 	Name      nvarchar(50)
 )
 
+ALTER TABLE Status
+ ADD MaterialTypeID int null
+GO
+
+ALTER TABLE Status  ADD  CONSTRAINT FK_Status_MaterialType FOREIGN KEY(MaterialTypeID)
+REFERENCES MaterialType (MaterialTypeID)
 
 
 /*************************************************/
@@ -54,21 +60,21 @@ CREATE TABLE Material(
 	MaterialID     int not null identity(1, 1)  primary key,
 	MaterialTypeID int not null,
 	Name           nvarchar(250),
-	StorageID      int not null,
-	Qty            decimal(18,2),
+--	StorageID      int not null,
+--	Qty            decimal(18,2),
 	Date		   datetime2,
-	Srok           int null,
-	StatusID       int null
+	Srok           int null
+--	StatusID       int null
 )
 ALTER TABLE Material  ADD  CONSTRAINT FK_Material_MaterialType FOREIGN KEY(MaterialTypeID)
 REFERENCES MaterialType (MaterialTypeID)
-
+/*
 ALTER TABLE Material  ADD  CONSTRAINT FK_Material_Storage FOREIGN KEY(StorageID)
 REFERENCES Storage (StorageID)
 
 ALTER TABLE Material  ADD  CONSTRAINT FK_Material_Status FOREIGN KEY(StatusID)
 REFERENCES Status (StatusID)
-
+*/
 
 ---- Индексы на таблицу.
 create index idx_Material_MaterialType on Material (MaterialTypeID);
@@ -90,6 +96,27 @@ CREATE TABLE Client(
 	Address  nvarchar(250),
 	Phone    nvarchar(25)
 )
+
+
+
+/*************************************************/
+-- DROP TABLE Relation
+CREATE TABLE Relation(
+	StorageRelationID     int not null identity(1, 1)  primary key,
+	MaterialID int not null,
+	StorageID  int not null,
+	Qty        decimal(18,2),
+	StatusID   int null
+)
+ALTER TABLE Relation  ADD  CONSTRAINT FK_Relation_Material FOREIGN KEY(MaterialID)
+REFERENCES Material (MaterialID)
+
+ALTER TABLE Relation  ADD  CONSTRAINT FK_Relation_Storage FOREIGN KEY(StorageID)
+REFERENCES Storage (StorageID)
+
+ALTER TABLE Relation  ADD  CONSTRAINT FK_Relation_Status FOREIGN KEY(StatusID)
+REFERENCES Status (StatusID)
+
 
 
 
@@ -127,3 +154,12 @@ ALTER TABLE Operation
 	ADD CONSTRAINT OperationDate 
 		DEFAULT GetDate() FOR OperationDate;
 
+
+
+
+/*************************************************/
+CREATE TABLE ReturnCode(
+	ReturnCode  int not null  primary key,
+	Message     nvarchar(255),
+)
+GO
