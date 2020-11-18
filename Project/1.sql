@@ -52,6 +52,7 @@ join [dbo].[MaterialType] mt
 join Status s on s.StatusID = r.StatusID
 join Storage st on st.StorageID = r.StorageID
 
+select * from [dbo].[vMaterial]
 /*
 declare @RetVal int
 exec [dbo].[upNewFamily] 
@@ -95,11 +96,12 @@ left join [dbo].[Client] cl
   on cl.ClientID = o.ClientID
 join [dbo].[Material] m
   on m.MaterialID = o.MaterialID
-join [dbo].[MaterialType] mt
-  on mt.MaterialTypeID = m.MaterialTypeID
- and mt.MaterialTypeID not in (1, 2, 4, 5) 
 left join Status s on s.StatusID = o.StatusID
 left join Storage st on st.StorageID = o.StorageID
+where o.OperationTypeID = 1
+
+select * from [dbo].[SALE_AND_BUY]
+
 
 /*
 declare @RetVal int
